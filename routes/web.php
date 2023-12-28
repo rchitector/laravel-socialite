@@ -37,38 +37,28 @@ Route::middleware([
 });
 
 
-Route::get('/auth/github/redirect', function () {
-    $url = Socialite::driver('github')->redirect()->getTargetUrl();
+Route::get('/auth/{driver}/redirect', function (string $driver) {
+    try {
+        $url = Socialite::driver($driver)->redirect()->getTargetUrl();
+    } catch (Exception $e) {
+        return to_route('login')->dangerBanner('Authentication driver "'.$driver.'" not configured');
+    }
     return Inertia::location($url);
-})->name('auth.github.redirect');
+})->name('auth.driver.redirect');
 
-Route::get('/auth/github/callback', function () {
-    $githubUser = Socialite::driver('github')->stateless()->user();
+Route::get('/auth/{driver}/callback', function (string $driver) {
+    try {
+        $driverUser = Socialite::driver($driver)->stateless()->user();
+    } catch (Exception $e) {
+        return to_route('login')->dangerBanner('Authentication driver "'.$driver.'" not configured');
+    }
     $user = User::updateOrCreate([
-        'provider_id' => $githubUser->getId()
+        'provider_id' => $driverUser->getId()
     ], [
-        'name' => $githubUser->getName() ?? $githubUser->nickname,
-        'email' => $githubUser->getEmail(),
-        'provider_type' => 'github',
+        'name' => $driverUser->getName() ?? $driverUser->nickname,
+        'email' => $driverUser->getEmail(),
+        'provider_type' => $driver,
     ]);
     auth()->login($user);
     return to_route('dashboard');
-});
-
-Route::get('/auth/google/redirect', function () {
-    $url = Socialite::driver('google')->redirect()->getTargetUrl();
-    return Inertia::location($url);
-})->name('auth.google.redirect');
-
-Route::get('/auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->stateless()->user();
-    $user = User::updateOrCreate([
-        'provider_id' => $googleUser->getId()
-    ], [
-        'name' => $googleUser->getName() ?? $googleUser->nickname,
-        'email' => $googleUser->getEmail(),
-        'provider_type' => 'google',
-    ]);
-    auth()->login($user);
-    return to_route('dashboard');
-});
+})->name('auth.driver.callback');

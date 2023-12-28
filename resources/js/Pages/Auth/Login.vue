@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Banner from "@/Components/Banner.vue";
 
 defineProps({
     canResetPassword: Boolean,
@@ -30,6 +31,8 @@ const submit = () => {
 </script>
 
 <template>
+    <Banner />
+
     <Head title="Log in" />
 
     <AuthenticationCard>
@@ -88,13 +91,13 @@ const submit = () => {
         </form>
 
         <div class="mt-4">
-            <Link :href="route('auth.github.redirect')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+            <Link :href="route('auth.driver.redirect', {driver: 'github'})" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                 Log in GitHub
             </Link>
         </div>
 
         <div class="mt-4">
-            <Link :href="route('auth.google.redirect')" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+            <Link :href="route('auth.driver.redirect', {driver: 'google'})" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                 Log in Google
             </Link>
         </div>
